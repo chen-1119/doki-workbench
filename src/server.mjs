@@ -14,6 +14,7 @@ const webFiles = new Map([
   ['/', ['index.html', 'text/html; charset=utf-8']],
   ['/style.css', ['style.css', 'text/css; charset=utf-8']],
   ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
+  ['/schedule.js', ['schedule.js', 'text/javascript; charset=utf-8']],
 ]);
 const idPattern = '[a-f0-9-]{36}';
 const jobPath = new RegExp('^/api/jobs/(' + idPattern + ')(?:/(state|assets)(?:/(' + idPattern + '))?)?$');

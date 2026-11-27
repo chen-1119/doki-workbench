@@ -8,10 +8,42 @@ import { PassThrough, Readable } from 'node:stream';
 import { createStudio } from '../src/server.mjs';
 import { createClient } from '../src/cli.mjs';
 import { fillEditor } from '../extension/fill.js';
+import { compareSchedule, isPastSchedule, shiftDay, weekSchedule } from '../web/schedule.js';
 
 const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO7+GpQAAAAASUVORK5CYII=', 'base64');
 const mp4Prefix = Buffer.from('000000186674797069736f6d00000001', 'hex');
 const inMemory = process.env.DOKI_TEST_IN_MEMORY === '1';
+
+test('排期按本地星期一至星期日分组，同日按时间排序', () => {
+  const sunday = new Date(2026, 10, 29, 23, 45);
+  const monday = shiftDay(sunday, -6);
+  const early = new Date(2026, 10, 23, 0, 15);
+  const later = new Date(2026, 10, 23, 20, 0);
+  const outside = new Date(2026, 10, 30, 0, 15);
+  const job = (id, scheduled) => ({ id, scheduledAt: scheduled?.toISOString(), createdAt: early.toISOString() });
+  const entries = [job('late', later), job('none'), job('next', outside), job('first', early), job('last', sunday)];
+  const days = weekSchedule(sunday, entries);
+  assert.equal(days.length, 7);
+  assert.equal(+days[0].day, +monday);
+  assert.deepEqual(days[0].jobs.map(item => item.id), ['first', 'late']);
+  assert.deepEqual(days[6].jobs.map(item => item.id), ['last']);
+  assert.equal(days.flatMap(day => day.jobs).length, 3);
+  assert.equal(weekSchedule(outside, entries)[0].jobs[0].id, 'next');
+  assert.deepEqual(entries.sort(compareSchedule).map(item => item.id), ['first', 'late', 'last', 'next', 'none']);
+});
+
+test('已过排期只提示待交接和待回填的超时任务', () => {
+  const now = new Date('2026-11-27T12:00:00.000Z');
+  const past = '2026-11-27T11:59:59.000Z';
+  for (const state of ['queued', 'handed_off']) {
+    assert.equal(isPastSchedule({ status: state, scheduledAt: past }, now), true);
+    assert.equal(isPastSchedule({ status: state, scheduledAt: null }, now), false);
+    assert.equal(isPastSchedule({ status: state, scheduledAt: now.toISOString() }, now), false);
+  }
+  for (const state of ['draft', 'published']) {
+    assert.equal(isPastSchedule({ status: state, scheduledAt: past }, now), false);
+  }
+});
 
 async function simulatedRequest(server, url, options = {}) {
   const parts = new URL(url);
@@ -151,7 +183,7 @@ test('本机客户端边界与页面入口', async t => {
   const unauthorized = await app.api('/api/pairing', undefined, 'GET', { Origin: 'https://other.example' });
   assert.equal(unauthorized.code, 403);
   assert.equal((await app.api('/api/jobs', { title: '外部请求' }, 'POST', {})).code, 403);
-  for (const path of ['/', '/style.css', '/app.js']) assert.equal((await app.request(app.base + path)).status, 200);
+  for (const path of ['/', '/style.css', '/app.js', '/schedule.js']) assert.equal((await app.request(app.base + path)).status, 200);
   assert.match((await app.api('/api/config')).data.platforms.xhs.editors.images, /target=image$/);
 });
 

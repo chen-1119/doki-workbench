@@ -9,31 +9,78 @@
 </head>
 <body>
   <aside class="rail">
-    <a class="brand" href="/" aria-label="Doki 工作台"><span class="brand-mark" aria-hidden="true">d</span><span>Doki<small>WORKBENCH</small></span></a>
+    <a class="brand" href="#overview" aria-label="Doki 工作台"><span class="brand-mark" aria-hidden="true">D</span><span>Doki<small>创作工作台</small></span></a>
     <nav aria-label="工作台导航">
-      <button data-view="all" aria-current="page">全部内容</button>
-      <button data-view="pending">发布队列</button>
-      <button data-view="published">已发布</button>
+      <button type="button" data-view="overview" aria-current="page"><span aria-hidden="true">▦</span>发布总览</button>
+      <button type="button" data-view="calendar"><span aria-hidden="true">▣</span>分发日历</button>
+      <button type="button" data-view="pending"><span aria-hidden="true">◷</span>发布队列</button>
+      <button type="button" data-view="all"><span aria-hidden="true">▤</span>全部内容</button>
+      <button type="button" data-view="published"><span aria-hidden="true">✓</span>发布归档</button>
     </nav>
-    <button id="pair" class="pair">连接 Chrome 插件</button>
+    <button id="pair" class="pair" type="button"><span aria-hidden="true">⇆</span>连接 Chrome 插件</button>
   </aside>
   <main>
-    <header class="top"><div><p class="eyebrow">内容管理</p><h1 id="page-title">全部内容</h1></div><button id="new" class="primary">＋ 新建内容</button></header>
-    <div class="stats" aria-label="任务统计">
-      <section><span>草稿</span><strong id="stat-draft">0</strong></section>
-      <section><span>待交接</span><strong id="stat-queued">0</strong></section>
-      <section><span>待回填</span><strong id="stat-handed_off">0</strong></section>
-      <section><span>已发布</span><strong id="stat-published">0</strong></section>
+    <header class="top">
+      <div><p class="eyebrow" id="today-label"></p><h1 id="page-title">发布总览</h1></div>
+      <div class="top-actions">
+        <button type="button" id="refresh" class="quiet" aria-label="刷新任务">刷新</button>
+        <button type="button" id="new" class="primary" disabled>＋ 新建内容</button>
+      </div>
+    </header>
+    <p id="notice" role="status">正在读取任务…</p>
+    <div id="overview" hidden>
+      <section class="spotlight" aria-labelledby="next-title">
+        <div class="spotlight-copy">
+          <span class="spotlight-label">下一步</span>
+          <h2 id="next-title"></h2>
+          <p id="next-detail"></p>
+          <div id="next-action" class="spotlight-action"></div>
+        </div>
+        <div class="spotlight-number"><strong id="week-total">0</strong><span>本周排期</span></div>
+      </section>
+      <div class="stats" aria-label="任务统计">
+        <button type="button" class="stat draft" data-status="draft"><span>草稿</span><strong id="stat-draft">0</strong></button>
+        <button type="button" class="stat queued" data-status="queued"><span>待交接</span><strong id="stat-queued">0</strong></button>
+        <button type="button" class="stat handed_off" data-status="handed_off"><span>待回填</span><strong id="stat-handed_off">0</strong></button>
+        <button type="button" class="stat published" data-status="published"><span>已发布</span><strong id="stat-published">0</strong></button>
+      </div>
+      <div class="overview-grid">
+        <section class="panel overview-panel" aria-labelledby="week-title">
+          <div class="panel-head"><div><h2 id="week-title">本周排期</h2><p id="week-range" class="muted"></p></div><button type="button" class="text-button" data-view="calendar">打开日历 ↗</button></div>
+          <div id="week-strip" class="week-strip" aria-label="选择本周日期"></div>
+          <div id="week-detail" class="week-detail"></div>
+        </section>
+        <section class="panel overview-panel" aria-labelledby="attention-title">
+          <div class="panel-head"><div><h2 id="attention-title">待处理</h2><p id="attention-count" class="muted"></p></div><button type="button" class="text-button" data-view="pending">打开队列 ↗</button></div>
+          <div id="attention-list" class="stack"></div>
+        </section>
+      </div>
+      <section class="panel overview-panel channels" aria-labelledby="channels-title">
+        <div class="panel-head"><div><h2 id="channels-title">平台分布</h2><p class="muted">按任务状态统计</p></div></div>
+        <div id="platform-summary" class="platform-summary"></div>
+      </section>
     </div>
-    <section class="panel" aria-label="内容列表">
-      <div class="filters"><label class="search">搜索 <input id="search" type="search" placeholder="标题或话题"></label>
-        <label>平台 <select id="platform-filter"><option value="">全部平台</option></select></label>
-        <label>类型 <select id="kind-filter"><option value="">全部类型</option><option value="images">图文</option><option value="video">视频</option></select></label>
-        <button type="button" id="refresh" class="quiet">刷新</button>
+    <section id="calendar-view" class="panel calendar-panel" aria-labelledby="calendar-heading" hidden>
+      <div class="panel-head">
+        <div><h2 id="calendar-heading"></h2><p id="calendar-count" class="muted"></p></div>
+        <div class="calendar-actions">
+          <button type="button" id="previous-week" aria-label="上周">‹</button>
+          <button type="button" id="this-week">本周</button>
+          <button type="button" id="next-week" aria-label="下周">›</button>
+        </div>
+      </div>
+      <p class="calendar-tip muted">按本机时区展示计划时间，定时发布请在平台后台设置。</p>
+      <div id="calendar-days" class="calendar-days"></div>
+    </section>
+    <section id="list-panel" class="panel" aria-label="内容列表" hidden>
+      <div class="filters">
+        <label class="search">搜索<input id="search" type="search" placeholder="标题或话题"></label>
+        <label>平台<select id="platform-filter"><option value="">全部平台</option></select></label>
+        <label>类型<select id="kind-filter"><option value="">全部类型</option><option value="images">图文</option><option value="video">视频</option></select></label>
+        <label id="status-field">状态<select id="status-filter"><option value="">全部状态</option><option value="draft">草稿</option><option value="queued">待交接</option><option value="handed_off">待回填</option><option value="published">已发布</option></select></label>
       </div>
       <div id="list"></div>
     </section>
-    <p id="notice" role="status"></p>
   </main>
 
   <dialog id="editor">
@@ -43,7 +90,7 @@
         <label>平台<select required name="platform"></select></label>
         <label>发布类型<select required name="kind"></select></label>
       </div>
-      <label>标题<input name="title" maxlength="120" required></label>
+      <label>标题<input name="title" maxlength="120" aria-describedby="title-count" required><small id="title-count"></small></label>
       <label>正文<textarea name="body" rows="5" maxlength="10000"></textarea></label>
       <label>话题<input name="tags" maxlength="400" placeholder="用空格分隔"></label>
       <label>计划发布时间<input name="scheduledAt" type="datetime-local"><small>按当前电脑时区显示，实际定时在创作者后台设置。</small></label>
