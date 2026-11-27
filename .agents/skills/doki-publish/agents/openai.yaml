@@ -1,0 +1,4 @@
+interface:
+  display_name: "Doki 发布助手"
+  short_description: "整理图文或视频素材、生成发布任务并交接给 Doki 浏览器插件"
+  default_prompt: "使用 $doki-publish 将这些素材整理成一条小红书图文草稿。"

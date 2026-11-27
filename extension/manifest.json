@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Doki 发布助手",
+  "version": "1.0.0",
+  "description": "从本机 Doki 工作台取用图文或视频任务，在创作者后台协助填写和回填。",
+  "minimum_chrome_version": "120",
+  "permissions": ["activeTab", "scripting", "storage", "downloads"],
+  "host_permissions": ["http://127.0.0.1/*"],
+  "action": { "default_title": "Doki 发布助手", "default_popup": "popup.html" }
+}

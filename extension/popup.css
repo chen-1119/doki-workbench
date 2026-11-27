@@ -1,0 +1,24 @@
+:root { color-scheme: light; font: 14px/1.5 "Microsoft YaHei UI", system-ui, sans-serif; color: #2c213a; background: #f8f5fd; }
+* { box-sizing: border-box; }
+body { width: 370px; margin: 0; padding: 15px; }
+header { display: flex; gap: 9px; align-items: center; margin-bottom: 11px; }
+header button { margin-left: auto; }
+.mark { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: #603bb8; color: white; font-size: 26px; font-weight: 800; font-style: italic; }
+h1 { margin: 0; font-size: 18px; }
+h2 { margin: 5px 0; font-size: 17px; overflow-wrap: anywhere; }
+small, .help, #when, #meta, #notice { color: #5e5369; }
+small, .help { font-size: 12px; }
+details, article { background: #fff; padding: 10px; border: 1px solid #e5dcec; border-radius: 12px; }
+summary { cursor: pointer; }
+label { display: grid; gap: 4px; margin: 8px 0; font-weight: 600; }
+input, select, button { font: inherit; border-radius: 7px; background: #fff; border: 1px solid #e5dcec; padding: 6px 8px; color: inherit; }
+input, select { width: 100%; min-width: 0; }
+button { cursor: pointer; }
+button:disabled { opacity: .55; }
+:focus-visible { outline: 2px solid #6842b7; outline-offset: 2px; }
+.row { display: flex; flex-wrap: wrap; gap: 6px; }
+.primary { background: #603bb8; color: white; border-color: #603bb8; font-weight: 700; }
+.asset { margin-top: 6px; max-width: 100%; text-align: left; overflow-wrap: anywhere; }
+#notice { overflow-wrap: anywhere; }
+#notice.error { color: #a00c32; }
+#notice:empty, [hidden] { display: none !important; }

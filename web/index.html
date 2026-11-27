@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doki 工作台</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <aside class="rail">
+    <a class="brand" href="/" aria-label="Doki 工作台"><span class="brand-mark" aria-hidden="true">d</span><span>Doki<small>WORKBENCH</small></span></a>
+    <nav aria-label="工作台导航">
+      <button data-view="all" aria-current="page">全部内容</button>
+      <button data-view="pending">发布队列</button>
+      <button data-view="published">已发布</button>
+    </nav>
+    <button id="pair" class="pair">连接 Chrome 插件</button>
+  </aside>
+  <main>
+    <header class="top"><div><p class="eyebrow">内容管理</p><h1 id="page-title">全部内容</h1></div><button id="new" class="primary">＋ 新建内容</button></header>
+    <div class="stats" aria-label="任务统计">
+      <section><span>草稿</span><strong id="stat-draft">0</strong></section>
+      <section><span>待交接</span><strong id="stat-queued">0</strong></section>
+      <section><span>待回填</span><strong id="stat-handed_off">0</strong></section>
+      <section><span>已发布</span><strong id="stat-published">0</strong></section>
+    </div>
+    <section class="panel" aria-label="内容列表">
+      <div class="filters"><label class="search">搜索 <input id="search" type="search" placeholder="标题或话题"></label>
+        <label>平台 <select id="platform-filter"><option value="">全部平台</option></select></label>
+        <label>类型 <select id="kind-filter"><option value="">全部类型</option><option value="images">图文</option><option value="video">视频</option></select></label>
+        <button type="button" id="refresh" class="quiet">刷新</button>
+      </div>
+      <div id="list"></div>
+    </section>
+    <p id="notice" role="status"></p>
+  </main>
+
+  <dialog id="editor">
+    <form id="edit-form">
+      <header class="modal-head"><div><p class="eyebrow" id="job-state">草稿</p><h2 id="edit-title">新建内容</h2></div><button type="button" class="close" data-close="editor" aria-label="关闭">×</button></header>
+      <div class="row">
+        <label>平台<select required name="platform"></select></label>
+        <label>发布类型<select required name="kind"></select></label>
+      </div>
+      <label>标题<input name="title" maxlength="120" required></label>
+      <label>正文<textarea name="body" rows="5" maxlength="10000"></textarea></label>
+      <label>话题<input name="tags" maxlength="400" placeholder="用空格分隔"></label>
+      <label>计划发布时间<input name="scheduledAt" type="datetime-local"><small>按当前电脑时区显示，实际定时在创作者后台设置。</small></label>
+      <div id="image-input"><label>正文图片<input name="images" type="file" multiple accept=".jpg,.jpeg,.png,.webp"><small>按添加顺序上传。每张最多 25 MB，最多 18 张。</small></label></div>
+      <div id="video-input" hidden><label>成片<input name="video" type="file" accept=".mp4,.mov,.webm"><small>建议使用 MP4，最多 2 GB。</small></label><label>封面（可选）<input name="cover" type="file" accept=".jpg,.jpeg,.png,.webp"></label></div>
+      <div id="assets"></div>
+      <div id="actions" class="actions"></div>
+      <p id="edit-notice" role="status"></p>
+      <details id="history-box" hidden><summary>操作记录</summary><ul id="history"></ul></details>
+    </form>
+  </dialog>
+
+  <dialog id="pairing">
+    <div class="modal-body">
+      <header class="modal-head"><h2>连接 Chrome 插件</h2><button class="close" type="button" data-close="pairing" aria-label="关闭">×</button></header>
+      <ol>
+        <li>打开 <code>chrome://extensions</code>，开启开发者模式。</li>
+        <li>选择「加载已解压的扩展程序」，选择仓库的 <code>extension</code> 目录。</li>
+        <li>打开 Doki 插件，粘贴下方配对信息。</li>
+      </ol>
+      <label>配对信息<input id="pairing-value" readonly></label>
+      <div class="actions"><button class="primary" id="copy-pair">复制配对信息</button><button id="rotate-pair">重置配对码</button></div>
+      <p id="pairing-notice" role="status"></p>
+    </div>
+  </dialog>
+</body>
+</html>

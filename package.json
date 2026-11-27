@@ -1,0 +1,12 @@
+{
+  "name": "doki-workbench",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "doki": "node src/cli.mjs",
+    "test": "node --test"
+  }
+}

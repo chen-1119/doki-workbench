@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doki 发布助手</title>
+  <link rel="stylesheet" href="popup.css">
+  <script type="module" src="popup.js"></script>
+</head>
+<body>
+  <header><span class="mark" aria-hidden="true">d</span><div><h1>Doki 发布助手</h1><small id="connection">等待连接</small></div><button id="refresh" type="button" hidden>刷新</button></header>
+  <details id="settings">
+    <summary>配对设置</summary>
+    <label>从工作台复制配对信息<input id="pairing" type="password" autocomplete="off" placeholder="粘贴配对信息"></label>
+    <div class="row"><button type="button" id="connect" class="primary">连接</button><button type="button" id="disconnect" hidden>断开</button></div>
+  </details>
+  <main id="active" hidden>
+    <label>发布任务<select id="jobs"></select></label>
+    <article id="job" hidden>
+      <div id="meta"></div>
+      <h2 id="title"></h2>
+      <p id="when"></p>
+      <div class="row"><button type="button" id="open">打开后台</button><button type="button" id="copy-title">复制标题</button><button type="button" id="copy-body">复制正文和话题</button></div>
+      <div id="files"></div>
+      <p class="help">在正确的发布页选入下载的图片或视频，等平台显示编辑器后，再从当前标签页打开插件。</p>
+      <button type="button" class="primary" id="fill">预填当前页面</button>
+      <p class="help">核对素材顺序、话题、封面、声明和时间，在平台完成最后提交。</p>
+      <button type="button" id="handoff">确认已交接</button>
+      <form id="result" hidden>
+        <label>已发布作品链接<input id="link" type="url" autocomplete="off" placeholder="https://…"></label>
+        <button type="submit" class="primary">记录已发布</button>
+      </form>
+    </article>
+  </main>
+  <p id="notice" role="status"></p>
+</body>
+</html>
